@@ -9,14 +9,14 @@
 
 <body>
 <div class="content">
-  <h1><strong>new github page. test</strong></h1>
-  <p id="authors"><span><a href="https://natanielruiz.github.io/"></a></span><a href="https://natanielruiz.github.io/">Nataniel Ruiz</a	> <a href="http://people.csail.mit.edu/yzli/">Yuanzhen Li</a> <a href="https://varunjampani.github.io/">Varun Jampani</a> <a href="https://research.google/people/106214/">Yael Pritch</a> <a href="http://people.csail.mit.edu/mrub/">Michael Rubinstein</a> <a href="https://kfiraberman.github.io/">Kfir Aberman</a><br>
+  <h1><strong>MoMA: Multimodal LLM Adapter for Fast Personalized Image Generation</strong></h1>
+  <p id="authors"><span><a href="https://natanielruiz.github.io/"></a></span><a href="https://natanielruiz.github.io/"> Kunpeng Song</a	> <a href="http://people.csail.mit.edu/yzli/">Yizhe zhu</a> <a href="https://varunjampani.github.io/">Bingchen Liu</a> <a href="https://research.google/people/106214/">Qing Yan</a> <a href="http://people.csail.mit.edu/mrub/">Ahmed Elgammal</a> <a href="https://kfiraberman.github.io/">Xiao Yang</a><br>
     <br>
-  <span style="font-size: 24px">Google Research
+  <span style="font-size: 24px">ByteDance
   </span></p>
   <br>
-  <img src="./DreamBooth_files/teaser_static.jpg" class="teaser-gif" style="width:100%;"><br>
-  <h3 style="text-align:center"><em>It’s like a photo booth, but once the subject is captured, it can be synthesized wherever your dreams take you…</em></h3>
+  <img src="./DreamBooth_files/1.png" class="teaser-gif" style="width:100%;"><br>
+  <h3 style="text-align:center"><em>Example results</em></h3>
     <font size="+2">
           <p style="text-align: center;">
             <a href="https://arxiv.org/abs/2208.12242" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -27,57 +27,57 @@
 </div>
 <div class="content">
   <h2 style="text-align:center;">Abstract</h2>
-  <p>test test test kable leap in the evolution of AI, enabling high-quality and diverse synthesis of images from a given text prompt. However, these models lack the ability to mimic the appearance of subjects in a given reference set and synthesize novel renditions of them in different contexts. In this work, we present a new approach for "personalization" of text-to-image diffusion models (specializing them to users' needs). Given as input just a few images of a subject, we fine-tune a pretrained text-to-image model (Imagen, although our method is not limited to a specific model) such that it learns to bind a unique identifier with that specific subject. Once the subject is embedded in the output domain of the model, the unique identifier can then be used to synthesize fully-novel photorealistic images of the subject contextualized in different scenes. By leveraging the semantic prior embedded in the model with a new autogenous class-specific prior preservation loss, our technique enables synthesizing the subject in diverse scenes, poses, views, and lighting conditions that do not appear in the reference images. We apply our technique to several previously-unassailable tasks, including subject recontextualization, text-guided view synthesis, appearance modification, and artistic rendering (all while preserving the subject's key features).</p>
+  <p>In this paper, we present MoMA: an open-vocabulary, training-free personalized image model that boasts flexible zero-shot capabilities. As foundational text-to-image models rapidly evolve, the demand for robust image-to-image translation grows. Addressing this need, MoMA specializes in subject-driven personalized image generation. Utilizing an open-source, Multimodal Large Language Model (MLLM), we train MoMA to serve a dual role as both a feature extractor and a generator. This approach effectively synergizes reference image and text prompt information to produce valuable image features, facilitating an image diffusion model. To better leverage the generated features, we further introduce a novel self-attention shortcut method that efficiently transfers image features to an image diffusion model, improving the resemblance of the target object in generated images. Remarkably, as a tuning-free plug-and-play module, our model requires only a single reference image and outperforms existing methods in generating images with high detail fidelity, enhanced identity-preservation and prompt faithfulness. We commit to making our work open-source, thereby providing universal access to these advancements.</p>
 </div>
-<div class="content">
+<!-- <div class="content">
   <h2>Background</h2>
   <p> Given a particular subject such as clock (shown in the real images on the left), it is very challenging to generate it in different contexts with state-of-the-art text-to-image models, while maintaining high fidelity to its key visual features. Even with dozens of iterations over a text prompt that contains a detailed description of the appearance of the clock (<em>"retro style yellow alarm clock with a white clock face and a yellow number three on the right part of the clock face in the jungle"</em>), the Imagen model [Saharia et al., 2022] can't reconstruct its key visual features (third column). Furthermore, even models whose text embedding lies in a shared language-vision space and can create semantic variations of the image, such as DALL-E2 [Ramesh et al., 2022], can neither reconstruct the appearance of the given subject nor modify the context (second column). In contrast, our approach (right) can synthesize the clock with high fidelity and in new contexts (<em>"a [V] clock in the jungle"</em>).</p>
   <br>
   <img class="summary-img" src="./DreamBooth_files/background.png" style="width:100%;"> <br>
-</div>
+</div> -->
 <div class="content">
   <h2>Approach</h2>
-  <p> Our method takes as input a few images (typically 3-5 images suffice, based on our experiments) of a subject (e.g., a specific dog) and the corresponding class name (e.g. "dog"), and returns a fine-tuned/"personalized'' text-to-image model that encodes a unique identifier that refers to the subject. Then, at inference, we can implant the unique identifier in different sentences to synthesize the subjects in difference contexts.</p>
+  <p> We present MoMA, a multimodal LLM adapter enhanced by fine-grained feature transfer. The overall architecture is demonstrated in Figure 2. Our method consists of three parts: (1) a generative multimodal decoder is utilized to extract image features from the reference image and edit it following the target prompt, yield the contextualized image feature; (2) in the meantime, we replace the back ground of the original image by white color, leaving only object pixels, leveraging the original UNet’s self-attention layers to extract the object image feature; finally, during the new image generation process, we injected the contextualized image features and the object image features into the UNet diffusion model with the dedicatedly trained context-cross-attention layers and object-cross-attention layers, respectively.</p>
   <br>
-  <img class="summary-img" src="./DreamBooth_files/high_level.png" style="width:100%;"> <br>
-  <p>Given ~3-5 images of a subject we fine tune a text-to-image diffusion in two steps: (a) fine tuning the low-resolution text-to-image model with the input images paired with a text prompt containing a unique identifier and the name of the class the subject belongs to (e.g., "A photo of a [T] dog”), in parallel, we apply a class-specific prior preservation loss, which leverages the semantic prior that the model has on the class and encourages it to generate diverse instances belong to the subject's class by injecting the class name in the text prompt (e.g., "A photo of a dog”). (b) fine-tuning the super resolution components with pairs of low-resolution and high-resolution images taken from our input images set, which enables us to maintain high-fidelity to small details of the subject.</p>
+  <img class="summary-img" src="./DreamBooth_files/2.png" style="width:100%;"> <br>
+  <p>To achieve the best model performance, we propose a two-staged pre-training strategy. First, we propose a Multimodal Generative Learning Stage, where we pre-train the multimodal image-feature decoder such that it learns to compose image features of the subject with the target prompt and output the CLIP embedding of the target image. To this end, we need to take advantage of the generative capability of the MLLM: while initially trained to generate text, we adapt it to generate image embeddings.</p>
   <br>
-  <img class="summary-img" src="./DreamBooth_files/system.png" style="width:100%;"> <br>
+  <img class="summary-img" src="./DreamBooth_files/3.png" style="width:100%;"> <br>
 </div>
 <div class="content">
-  <h2>Results</h2>
-  <p>Results for re-contextualization of a bag and vase subject instances. By finetuning a model using our method we are able to generate different images of the a subject instance in different environments, with high preservation of subject details and realistic interaction between the scene and the subject. We display the conditioning prompts below each image. </p>
-<img class="summary-img" src="./DreamBooth_files/results.png" style="width:100%;">
+  <h2>Results for context editing</h2>
+  <p>We present qualitative examples to illustrate the effectiveness of our model. In Fig. 4, the target prompts specify a novel contextual environment. Our model seamlessly generates a high-quality background while precisely situating the same object within this new setting </p>
+<img class="summary-img" src="./DreamBooth_files/4.png" style="width:100%;">
 </div>
 <div class="content">
-  <h2>Art Rendition</h2>
-  <p>Original artistic renditions of our subject dog in the style of famous painters. We remark that many of the generated poses were not seen in the training set, such as the Van Gogh and Warhol rendition. We also note that some renditions seem to have novel composition and faithfully imitate the style of the painter - even suggesting some sort of creativity (extrapolation given previous knowledge).</p>
+  <h2>Results for texture editing</h2>
+  <p>In the following image, the prompts indicate a change in texture. Our model showcases its ability to render realistic textures in response to the textual cues, adeptly altering specified visual elements while leaving other identity aspects of the image unaffected..</p>
   <br>
-  <img class="summary-img" src="./DreamBooth_files/art.png" style="width:100%;"> <br>
+  <img class="summary-img" src="./DreamBooth_files/texture.png" style="width:100%;"> <br>
 </div>
 <div class="content">
-  <h2>Text-Guided View Synthesis</h2>
+  <h2>Compare with other methods</h2>
   <p>Our technique can synthesized images with specified viewpoints for a subject cat (left to right: top, bottom, side and back views). Note that the generated poses are  different from the input poses, and the background changes in a realistic manner given a pose change. We also highlight the preservation of complex fur patterns on the subject cat's forehead.</p>
   <br>
-  <img class="summary-img" src="./DreamBooth_files/novel_views.png" style="width:100%;"> <br>
+  <img class="summary-img" src="./DreamBooth_files/5.png" style="width:100%;"> <br>
 </div>
 <div class="content">
-  <h2>Property Modification</h2>
-  <p>We show color modifications in the first row (using prompts ``a [color] [V] car''), and crosses between a specific dog and different animals in the second row (using prompts ``a cross of a [V] dog and a [target species]''). We highlight the fact that our method preserves unique visual features that give the subject its identity or essence, while performing the required property modification.</p>
+  <h2>Plug and play adapter</h2>
+  <p>our model is an universal adapter because we freeze the original diffusion model in the training stage. It can generalize to the custom model checkpoints fine-tuned from the same base model. In Fig. 10, we verify this on community models from HuggingFace and CivitAi [8] including Realistic Vision V4.0 [2], ReV-Animated [31], Anything v4 [39] and Esthetic Retro Anime [22]. These models are all fine-tuned from SD v1.5. MoMA can be directly applied to these community models without any modification..</p>
   <br>
-  <img class="summary-img" src="./DreamBooth_files/property_modification.png" style="width:100%;"> <br>
+  <img class="summary-img" src="./DreamBooth_files/6.png" style="width:100%;"> <br>
 </div>
-<div class="content">
+<!-- <div class="content">
   <h2>Accessorization</h2>
   <p>Outfitting a dog with accessories. The identity of the subject is preserved and many different outfits or accessories can be applied to the dog given a prompt of type <em>"a [V] dog wearing a police/chef/witch outfit''</em>. We observe a realistic interaction between the subject dog and the outfits or accessories, as well as a large variety of possible options.</p>
   <br>
   <img class="summary-img" src="./DreamBooth_files/accessories.png" style="width:100%;"> <br>
-</div>
-<div class="content">
+</div> -->
+<!-- <div class="content">
   <h2>Societal Impact</h2>
   <p>This project aims to provide users with an effective tool for synthesizing personal subjects (animals, objects) in different contexts. While general text-to-image models might be biased towards specific attributes when synthesizing images from text, our approach enables the user to get a better reconstruction of their desirable subjects. On contrary, malicious parties might try to use such images to mislead viewers. This is a common issue, existing in other generative models approaches or content manipulation techniques. Future research in generative modeling, and specifically of personalized generative priors, must continue investigating and revalidating these concerns.</p>
   <br>
-</div>
+</div> -->
 <div class="content">
   <h2>BibTex</h2>
   <code> @article{ruiz2022dreambooth,<br>
@@ -95,3 +95,9 @@
 </div>
 </body>
 </html>
+ 
+
+
+
+
+
