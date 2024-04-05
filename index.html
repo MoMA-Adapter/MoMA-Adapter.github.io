@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>test</title>
+<title>MoMA Personalization</title>
 <link href="./DreamBooth_files/style.css" rel="stylesheet">
 <script type="text/javascript" src="./DreamBooth_files/jquery.mlens-1.0.min.js"></script> 
 <script type="text/javascript" src="./DreamBooth_files/jquery.js"></script>
@@ -9,20 +9,20 @@
 
 <body>
 <div class="content">
-  <h1><span style="color: red;">MoMA</span>: <strong><span style="color: red;">M</span>ultim<span style="color: red;">o</span>dal LL<span style="color: red;">M</span> <span style="color: red;">A</span>dapter for Fast Personalized Image Generation</strong></h1>
-  <p id="authors"><span><a href="https://natanielruiz.github.io/"></a></span><sup>1</sup><sup>2</sup>Kunpeng Song.    <sup>2</sup>Yizhe zhu.   <sup>2</sup>Bingchen Liu.   <sup>2</sup>Qing Yan.    <sup>1</sup>Ahmed Elgammal.    <sup>2</sup>Xiao Yang.<br>
+  <!-- <h1>MoMA: Multimodal LLM Adapter for Fast Personalized Image Generation</h1> -->
+  <h1><span style="color: red;">MoMA</span>: <strong><span style="color: red;">M</span>ultim<span style="color: red;">o</span>dal LL<span style="color: red;">M</span> <span style="color: red;">A</span>dapter for Fast Personalized</strong></h1>
+  <h1><strong>Image Generation</strong></h1>
+  <p id="authors"><span><a href="https://natanielruiz.github.io/"></a></span>Kunpeng Song<sup>1,</sup><sup>2</sup>,    Yizhe zhu<sup>1</sup>,   Bingchen Liu<sup>1</sup>,   Qing Yan<sup>1</sup>,    Ahmed Elgammal<sup>2</sup>    and Xiao Yang<sup>1</sup><br>
     <br>
   <span style="color: rgb(0, 85, 150);font-size: 20px" class="author-block"><sup>1</sup>ByteDance</span>
   <span style="color: rgb(0, 85, 150);font-size: 20px" class="author-block"><sup>2</sup>Rutgers University</span>
   </p>
   <br>
   <img src="./DreamBooth_files/hero_web.jpg" class="teaser-gif" style="width:100%;"><br>
-  <h3 style="text-align:center"><em>Example results</em></h3>
     <font size="+2">
           <p style="text-align: center;">
-            <a href="https://arxiv.org/abs/2208.12242" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="DreamBooth_files/bibtex.txt" target="_blank">[Code comming soon]</a> &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="DreamBooth_files/bibtex.txt" target="_blank">[Demo comming soon]</a>
+            <a href="https://drive.google.com/file/d/1i5gmq4ZsPdDJqNvm9KQUpTSWu-RqudLP/view?usp=sharing" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://github.com/MoMA-Adapter/MoMA-Adapter.github.io" target="_blank">[Code]</a>(coming soon) &nbsp;&nbsp;&nbsp;&nbsp;
           </p>
     </font>
 </div>
@@ -35,7 +35,7 @@
   <p> We present MoMA, a multimodal LLM adapter enhanced by fine-grained feature transfer. The overall architecture is demonstrated in Figure below. Our method consists of three parts: (1) a generative multimodal decoder is utilized to extract image features from the reference image and edit it following the target prompt, yield the contextualized image feature; (2) in the meantime, we replace the back ground of the original image by white color, leaving only object pixels, leveraging the original UNet’s self-attention layers to extract the object image feature; finally, during the new image generation process, we injected the contextualized image features and the object image features into the UNet diffusion model with the dedicatedly trained context-cross-attention layers and object-cross-attention layers, respectively.</p>
   <br>
   <img class="summary-img" src="./DreamBooth_files/2.png" style="width:100%;"> <br>
-  <p>To achieve the best model performance, we propose a two-staged pre-training strategy. First, we propose a Multimodal Generative Learning Stage, where we pre-train the multimodal image-feature decoder such that it learns to compose image features of the subject with the target prompt and output the CLIP embedding of the target image. To this end, we need to take advantage of the generative capability of the MLLM: while initially trained to generate text, we adapt it to generate image embeddings.</p>
+  <p>To achieve the best model performance, we propose a two-staged pre-training strategy. First, we propose a Multimodal Generative Learning Stage, where we pre-train the multimodal image-feature decoder such that it learns to compose image features of the subject with the target prompt and output the CLIP embedding of the target image. Second, subject and context cross attention layers are trained to inject this embedding. To further enhance the detail faithfulness, we involve image self-attention features transfer and apply a masking mechanism</p>
   <br>
   <img class="summary-img" src="./DreamBooth_files/3.png" style="width:100%;"> <br>
 </div>
@@ -52,13 +52,13 @@
 </div>
 <div class="content">
   <h2>Compare with other methods</h2>
-  <p>Our technique can synthesized images with specified viewpoints for a subject cat (left to right: top, bottom, side and back views). Note that the generated poses are  different from the input poses, and the background changes in a realistic manner given a pose change. We also highlight the preservation of complex fur patterns on the subject cat's forehead.</p>
+  <p>Zero-shot Qualitative Comparison. We share recontextualization in upper panel and texture editing in lower panel. Our results have significantly more accurate details for context editing and better balancing between prompt and image fidelity in texture editing.</p>
   <br>
   <img class="summary-img" src="./DreamBooth_files/5.png" style="width:100%;"> <br>
 </div>
 <div class="content">
   <h2>Plug and play adapter</h2>
-  <p>our model is an universal adapter because we freeze the original diffusion model in the training stage. It can generalize to the custom model checkpoints fine-tuned from the same base model. In Figure below, we verify this on community models from HuggingFace and CivitAi [8] including Realistic Vision V4.0 [2], ReV-Animated [31], Anything v4 [39] and Esthetic Retro Anime [22]. These models are all fine-tuned from SD v1.5. MoMA can be directly applied to these community models without any modification..</p>
+  <p>Our model is an universal adapter because we freeze the original diffusion model in the training stage. It can generalize to the custom model checkpoints fine-tuned from the same base model. In Figure below, we verify this on community models from HuggingFace and CivitAi [8] including Realistic Vision V4.0 [2], ReV-Animated [31], Anything v4 [39] and Esthetic Retro Anime [22]. These models are all fine-tuned from SD v1.5. MoMA can be directly applied to these community models without any modification..</p>
   <br>
   <img class="summary-img" src="./DreamBooth_files/6.png" style="width:100%;"> <br>
 </div>
@@ -73,7 +73,7 @@
   <p>This project aims to provide users with an effective tool for synthesizing personal subjects (animals, objects) in different contexts. While general text-to-image models might be biased towards specific attributes when synthesizing images from text, our approach enables the user to get a better reconstruction of their desirable subjects. On contrary, malicious parties might try to use such images to mislead viewers. This is a common issue, existing in other generative models approaches or content manipulation techniques. Future research in generative modeling, and specifically of personalized generative priors, must continue investigating and revalidating these concerns.</p>
   <br>
 </div> -->
-<div class="content">
+<!-- <div class="content">
   <h2>BibTex</h2>
   <code> @article{ruiz2022dreambooth,<br>
   &nbsp;&nbsp;title={MoMA: new github page. test new branch},<br>
@@ -81,13 +81,24 @@
   &nbsp;&nbsp;booktitle={arXiv preprint arxiv:2208.12242},<br>
   &nbsp;&nbsp;year={2022}<br>
   } </code> 
-</div>
-<div class="content" id="acknowledgements">
+</div> -->
+<!-- <div class="content" id="acknowledgements">
   <p><strong>Acknowledgements</strong>:
     We thank Rinon Gal, Adi Zicher, Ron Mokady, Bill Freeman, Dilip Krishnan, Huiwen Chang and Daniel Cohen-Or for their valuable inputs that helped improve this work, and to Mohammad Norouzi, Chitwan Saharia and William Chan for providing us with their support and the pretrained models of Imagen. Finally, a special thank you to David Salesin for his feedback, advice and for his support for the project.
-    <!-- Recycling a familiar <a href="https://chail.github.io/latent-composition/">template</a> ;). --> 
-  </p>
-</div>
+    Recycling a familiar <a href="https://chail.github.io/latent-composition/">template</a> ;). --> 
+  <!-- </p> -->
+<!-- </div> -->
+<br><br>
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">                                                                                                                                   
+      <!-- <div class="content"> -->
+      The website template is taken from <a href="https://dreambooth.github.io/">dreambooth</a> project page.
+      <!-- </div> -->
+    </div>
+  </div>
+</footer>
+<br><br>
 </body>
 </html>
  
